@@ -23,7 +23,7 @@ class Tasty:
         self.important_tasks = []
         self.completed = []
         self.unfinished = []
-        self.trash = []
+        self.trash = {}
         self.version = "1.0.0"
         self.save_file = "saved_tasks.json"
 
@@ -44,6 +44,23 @@ class Tasty:
         else:
             print ("Task already added.")
 
+    def remove_task(self, task_name):
+        """
+        Remove a  task from the user tasks
+        """
+        if task_name in self.tasks:
+            del self.tasks[task_name] 
+
+    def trash_task(self, task_name):
+        """
+        Put the tasks in the trash 
+        """
+        if  self.trash:
+            for task_name, status in self.trash.item():
+                print("- ", task_name, status)
+        else:
+            print ("No tasks to display")           
+
     def prompt_user(self,prompt):
         line = input(prompt)
         while not line:
@@ -54,6 +71,8 @@ class Tasty:
         rest = words[1:]
         rest = " ".join(rest)
         return command, rest
+    
+
 
 
     def help(self):
@@ -106,50 +125,16 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
     def exit_program(self):
         print("Bye Bye")
-        os.exit('')
+        exit()
 
 if __name__ == "__main__":
     tasty = Tasty()
     tasty.help()
-    while True:
-        command = input("Tasty> ")
-        if command == "exit":
-            pass # exit the program, how would you do this?
-        elif command == "help":
-            tasty.help()
-        elif command == "license":
-            tasty.license()
-        else:
-            print("Unknown command")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 while True:
-    command, task_name = tasty.prompt_user("Tasty>")
-    if command =="exit":
+    command, task_name = tasty.prompt_user("Tasty> ")
+    if command == "exit":
         tasty.exit_program()
-        exit()
+        #exit()
     elif command == "help":
         tasty.help()
     elif command == "license":
@@ -157,7 +142,9 @@ while True:
     elif command == "tasks":
         tasty.display_tasks()
     elif command == "new":
-        tasty.add_tasks(task_name) 
+        tasty.add_task(task_name)
+    elif command == "remove":
+        tasty.remove_task(task_name)    
     else:
         print("Unknown command:", command, ' : ', task_name)     
 #exit()                
