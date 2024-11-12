@@ -20,9 +20,6 @@ class Tasty:
 
     def __init__(self):
         self.tasks ={} #dictionary
-        self.important_tasks = []
-        self.completed = []
-        self.unfinished = []
         self.trash = {}
         self.version = "1.0.0"
         self.save_file = "saved_tasks.json"
@@ -50,14 +47,14 @@ class Tasty:
         """
         if task_name in self.tasks:
             del self.tasks[task_name] 
+            self.trash[task_name] = 'not yet'
 
-    def trash_task(self, task_name):
+    def trash_task(self):
         """
-        Put the tasks in the trash 
+        Display trash 
         """
         if  self.trash:
-            for task_name, status in self.trash.item():
-                print("- ", task_name, status)
+            print(task_name)
         else:
             print ("No tasks to display")           
 
@@ -72,8 +69,38 @@ class Tasty:
         rest = " ".join(rest)
         return command, rest
     
+    def complete_task(self,task_name):
+        if self.tasks[task_name] == "not yet":
+            self.tasks[task_name] = 'completed'
+        else:
+            print('Task Done')
 
+    def unfinished_task(self,task_name):
+            self.tasks[task_name] = "Unfinished"
 
+    def save(self):
+        data = {
+            "tasks": self.tasks,
+        }
+        with open(self.save_file, "w") as f:
+            json.dump(data, f)
+        print("Tasks saved!")
+
+    def exit_program(self):
+        print("exiting program.")
+        exit(0)
+
+    def clear_screen(self):
+        os.system('cls' if os.name == 'nt' else 'clear')
+
+    def load(self):
+        if not os.path.exists(self.save_file):
+            print("No saved file found")
+            return None
+        with open(self.save_file, "r") as f:
+            data = json.load(f)
+        self.tasks = data["tasks"]
+        print("loaded succesfully!")
 
     def help(self):
         """
@@ -145,6 +172,20 @@ while True:
         tasty.add_task(task_name)
     elif command == "remove":
         tasty.remove_task(task_name)    
+    elif command == "trash":
+        tasty.trash_task()  
+    elif command == "load":
+        tasty.load()
+    elif command == "complete":
+        tasty.complete_task(task_name)
+    elif command == "unfinish":
+        tasty.unfinish_task(task_name)
+    elif command == "save":
+        tasty.save()
+    elif command == "exit":
+        tasty.exit_program()
+    elif command == "clear":
+        tasty.clear_screen()
     else:
         print("Unknown command:", command, ' : ', task_name)     
 #exit()                
